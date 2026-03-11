@@ -1,0 +1,46 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+      {
+          "label": "Preview build",
+          "detail": "Build on each save and open a preview window",
+          "isBackground": true,
+          "group": {
+              "kind": "test",
+              "isDefault": true
+          },
+          "dependsOn": [
+              "build", "open", "preview"
+          ],
+          "dependsOrder": "parallel"
+      },
+      {
+          "label": "build",
+          "type": "shell",
+          "command": "npm run dev",
+          "presentation": {
+              "reveal": "always",
+              "group": "build"
+          }
+      },
+      {
+          "label": "preview",
+          "type": "shell",
+          "command": "npm run preview",
+          "presentation": {
+              "reveal": "silent",
+              "group": "preview"
+          }
+      },
+      {
+          "label": "open",
+          "type": "shell",
+          "command": "explorer http://localhost:6767/ & exit 0",
+          "presentation": {
+              "reveal": "never",
+              "group": "preview",
+              "close": true
+          }
+      }
+  ]
+}

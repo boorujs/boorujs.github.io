@@ -4,7 +4,11 @@ import { glob } from "glob";
 import react from "@vitejs/plugin-react";
 
 export default defineConfig({
+    preview: {
+        port: 6767
+    },
     esbuild: {
+        jsxImportSource: "jsx-dom",
         jsxInject: `import React from "react"`
     },
     build: {

@@ -45,7 +45,7 @@ search.input.addEventListener("keydown", async (event) => {
             perPage: 42
         }).then(posts => posts.forEach(post =>
             search.results.appendChild(
-                <li title={`${
+                <li key={post.id} title={`${
                     post.id
                 }: ${
                     post.tags

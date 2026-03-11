@@ -1,11 +1,12 @@
-import * as Rule34 from "https://esm.sh/gh/booru-abuse/booru-abuse/src/module/rule34/index.ts.mjs?target=es2022";
+import * as Rule34 from "https://esm.sh/gh/booru-abuse/booru-abuse@v0.1.0-alpha/src/module/rule34/index.ts.mjs?target=es2022";
 
 /* this page is in testing and i just want to be sure esm.sh works before i get
  * custom api keys or a vercel service set up
  *
- * ill refresh the key for the account once i get that set up #lol
+ * i dont value an individual limited key enough to hide it in any way, ill
+ * refresh the key for the account once i get custom keys set up #lol
  * 
- * dont abuse this key please and thanks!
+ * regardless dont abuse this key please and thanks!
  */
 const auth = {
     api_key: "57931764243134609eb715b9d5c931134cb3cadfdbe166548b2b25543b869f82ee435076819810388fac48119b1eb0731dc86d75aff7b163e5d0c01f21618ecb",

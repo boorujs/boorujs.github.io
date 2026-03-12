@@ -1,6 +1,7 @@
 const ERROR_CODE = {
     METHOD_NOT_IMPLEMENTED: "Method must be implemented by subclass.",
-    PROPERTY_NOT_IMPLEMENTED: "Property must be implemented by subclass."
+    PROPERTY_NOT_IMPLEMENTED: "Property must be implemented by subclass.",
+    UNEXPECTED_ERROR: "An unexpected error was caught."
 };
 
 /** @abstract */
@@ -27,7 +28,12 @@ export class Submodule {
     }
 
     constructor () {
-        this.run();
+        try {
+            this.run();
+        } catch (error) {
+            window.alert(error);
+            this.throwError("UNEXPECTED_ERROR");
+        }
     }
     
     element = {

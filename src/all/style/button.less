@@ -12,7 +12,7 @@
 	background-size: cover;
 	box-sizing: border-box;
 	border: (2 / @unit) solid var(--accent-color-dark-2);
-	border-radius: (8 / @unit);
+	// border-radius: (8 / @unit);
 
 	cursor: pointer;
 	user-select: none;
@@ -27,11 +27,11 @@
         );
 		border-color: var(--accent-color-light-2);
 		color: var(--accent-color-dark-6);
-		box-shadow:
-			0 0 // offset
-			(5 / @unit) // blur
-			(1 / @unit) // spread
-			var(--accent-color-main); // color
+		/* box-shadow:
+			0 0
+			(5 / @unit)
+			(1 / @unit)
+			var(--accent-color-main); */
 	}
 
 	&:active {
@@ -42,7 +42,7 @@
         );
 		border-color: var(--accent-color-dark-2);
 		color: var(--accent-color-light-4);
-		box-shadow: none;
+		// box-shadow: none;
 	}
 
 	&[disabled] {

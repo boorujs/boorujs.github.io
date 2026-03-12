@@ -49,6 +49,11 @@ new class Rule34Module extends Submodule {
             thumbnail: post.file.thumbnail.url,
             preview: post.file.downsample.url,
             href: post.file.url,
+            type: ({
+                [Rule34.PostFileType.Static]: "static",
+                [Rule34.PostFileType.Animated]: "animated",
+                [Rule34.PostFileType.Video]: "video",
+            }),
             id: post.id,
             tags: post.tags.ofCategory(Rule34.TagType.Artist).map(tag => ({
                 name: tag.name,

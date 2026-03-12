@@ -19,7 +19,8 @@ export class Submodule {
      * @abstract Method run when post results are searched for.
      * @param {string} query Value of input element.
      * @returns {Promise<{
-     *  thumbnail: string; preview: string; href: string;
+     *  thumbnail: string; preview: string;
+     *  href: string; type: "static" | "animated" | "video";
      *  id: string | number; tags: { name: string; count: number; }[];
      * }[]>}
      */
@@ -92,16 +93,18 @@ export class Submodule {
         this.element.results
         .replaceChildren(...results.map((post, index) => (
             <li key={index}
+                className={post.type}
                 title={`${post.id}: ${post.tags
                     .map(t => `${t.name} (${t.count})`)
                     .join(", ")
                 }`}
             >
                 <a href={post.href}>
-                    <img src={post.thumbnail}
-                         onMouseOver={setSrc(post.preview)}
-                         onMouseOut ={setSrc(post.thumbnail)}
-                    />
+                    <img className="thumb" src={post.thumbnail} />
+                    { post.type === "video"
+                        ? <video className="preview" src={post.preview}></video>
+                        : <img className="preview" src={post.preview} />
+                    }
                 </a>
             </li>
         )));

@@ -31,7 +31,7 @@ search#search > fieldset#search-bar {
         background-size: cover;
         box-sizing: border-box;
         border: (2 / @unit) solid var(--accent-color-light-3);
-        border-radius: (8 / @unit);
+        // border-radius: (8 / @unit);
 
         > input.input {
             padding: 0;
@@ -51,7 +51,7 @@ search#search > fieldset#search-bar {
             display: none; // set to "block" when input:focus
 
             position: absolute;
-            bottom: (14 / @unit);
+            bottom: (-14 / @unit);
             left: 0;
 
             box-sizing: border-box;
@@ -61,7 +61,7 @@ search#search > fieldset#search-bar {
                 @bg-color
             );
             border: (2 / @unit) solid darken(spin(@bg-color, -5), 20%, relative);
-            border-radius: (8 / @unit);
+            // border-radius: (8 / @unit);
 
             /*** Arrow ***/
             &::after {
@@ -70,7 +70,7 @@ search#search > fieldset#search-bar {
                 width: 0;
 
                 position: absolute;
-                bottom: -100%;
+                bottom: 100%;
                 left: (6 / @unit);
 
                 border-width: 0 (10 / @unit) (10 / @unit);
@@ -138,11 +138,11 @@ search#search > fieldset#search-bar {
 
         /**** Input element is focused ****/
         &:has(input.input:focus) {
-            box-shadow:
+            /* box-shadow:
                 0 (1 / @unit)
                 (5 / @unit)
                 (3 / @unit)
-                fade(@bg-color, 68%); // 0x44 = 68
+                fade(@bg-color, 68%); */ // 0x44 = 68
             background-image: linear-gradient(
                 to bottom,
                 desaturate(darken(spin(@bg-color, -5), 10%, relative), 10%, relative),

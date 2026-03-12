@@ -46,13 +46,13 @@ export class Submodule {
 
     run() {
         this.element.input.addEventListener("keydown",
-            event => event.key === "Enter" && this.submitSearch()
+            event => event.key === "Enter" && this.submitSearch().catch(window.alert)
         );
         this.element.submit.addEventListener("click",
-            () => this.submitSearch()
+            () => this.submitSearch().catch(window.alert)
         );
         this.element.input.addEventListener("input",
-            () => this.suggestAutocompletion()
+            () => this.suggestAutocompletion().catch(window.alert)
         );
     }
 

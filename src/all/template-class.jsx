@@ -61,19 +61,19 @@ export class Submodule {
         else return el;
     }
 
-    suggestAutocompletion() {
+    async suggestAutocompletion() {
         this.element.autocomplete.replaceChildren();
         const query = this.element.input.value;
 
-        this.autocomplete(query).then(results =>
-            this.element.autocomplete
-            .replaceChildren(...results.map((tag, index) => (
-                <li key={index}>
-                    <span className="name">{ tag.name }</span>
-                    <span className="count">{ tag.count }</span>
-                </li>
-            )))
-        );
+        const results = await this.autocomplete(query);
+
+        this.element.autocomplete
+        .replaceChildren(...results.map((tag, index) => (
+            <li key={index}>
+                <span className="name">{ tag.name }</span>
+                <span className="count">{ tag.count }</span>
+            </li>
+        )));
     }
 
     submitSearch() {
@@ -81,28 +81,24 @@ export class Submodule {
         const query = this.element.input.value;
 
         this.urlParam.set({ q: query });
-        this.search(query).then(results =>
-            this.element.results
-            .replaceChildren(...results.map((post, index) => (
-                <li
-                    key={index}
-                    title={
-                        `${post.id}: ${post.tags
-                            .map(t => `${t.name} (${t.count})`)
-                            .join(", ")
-                        }`
-                    }
-                >
-                    <a href={post.href}>
-                        <img
-                            src={post.thumbnail}
-                            onMouseOver={setSrc(post.preview)}
-                            onMouseOut ={setSrc(post.thumbnail)}
-                        />
-                    </a>
-                </li>
-            )))
-        );
+        const results = await this.search(query);
+        
+        this.element.results
+        .replaceChildren(...results.map((post, index) => (
+            <li key={index}
+                title={`${post.id}: ${post.tags
+                    .map(t => `${t.name} (${t.count})`)
+                    .join(", ")
+                }`}
+            >
+                <a href={post.href}>
+                    <img src={post.thumbnail}
+                         onMouseOver={setSrc(post.preview)}
+                         onMouseOut ={setSrc(post.thumbnail)}
+                    />
+                </a>
+            </li>
+        )));
         
         var setSrc = (src) => function () { this.src = src; };
     }

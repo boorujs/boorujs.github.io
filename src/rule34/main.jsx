@@ -29,7 +29,11 @@ try {
     window.stop();
 }
 
-const getEl = (i, q) => document.getElementById(i).querySelector(q);
+function getEl(i, q) {
+    const el = document.getElementById(i);
+    if (q) return el.querySelector(q);
+    else return el;
+};
 
 const el = {
     input: getEl("search-bar", ".bar .input"),

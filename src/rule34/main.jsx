@@ -33,7 +33,7 @@ function getEl(i, q) {
     const el = document.getElementById(i);
     if (q) return el.querySelector(q);
     else return el;
-};
+}
 
 const el = {
     input: getEl("search-bar", ".bar .input"),

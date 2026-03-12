@@ -8,36 +8,20 @@
         <link rel="stylesheet" href="./style.less" />
 
         <!-- <link rel="preload" as="script"
-            href="https://esm.sh/gh/booru-abuse/booru-abuse/src/module/rule34/index.ts.mjs?target=es2022" /> -->
+              href="https://esm.sh/gh/booru-abuse/booru-abuse/src/module/rule34/index.ts.mjs?target=es2022" /> -->
         <script type="module" src="./main.jsx"></script>
     </head>
     <body>
-        <search>
-            <label>
-                Search on Rule 34
-                <input type="search" id="search-input" />
-            </label>
-            <button type="submit">Search</button>
-            <ul id="search-autocomplete">
-                <li>
-                    <span class="name">artist</span>
-                    <span class="count">count</span>
-                </li>
-                <li>
-                    <span class="name">artist</span>
-                    <span class="count">count</span>
-                </li>
-                <li>
-                    <span class="name">artist</span>
-                    <span class="count">count</span>
-                </li>
-                <li>
-                    <span class="name">artist</span>
-                    <span class="count">count</span>
-                </li>
-            </ul>
-            <ul id="search-results">
-            </ul>
+        <search id="search">
+            <fieldset id="search-bar">
+                <div class="bar">
+                    <input type="search" class="input" />
+                    <button type="button" class="clear">&times;</button>
+                    <ul class="autocomplete"></ul>
+                </div>
+                <button type="submit" class="submit button">Search</button>
+            </fieldset>
+            <ul id="search-results"></ul>
         </search>
     </body>
 </html>

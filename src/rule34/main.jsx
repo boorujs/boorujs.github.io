@@ -29,11 +29,11 @@ try {
     window.stop();
 }
 
-const getEl = (i) => document.getElementById(i);
+const getEl = (i, q) => document.getElementById(i).querySelector(q);
 
 const el = {
-    input: getEl("search-input"),
-    autocomplete: getEl("search-autocomplete"),
+    input: getEl("search-bar", ".bar .input"),
+    autocomplete: getEl("search-bar", ".autocomplete"),
     results: getEl("search-results")
 };
 

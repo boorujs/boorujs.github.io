@@ -1,0 +1,75 @@
+set Element = {
+    Input
+    Autocomplete
+    Flipper = {
+        Prev
+        Next
+        Input
+    }
+}
+
+Window.On("load") = LoadResults()
+UrlParam.On("change") = LoadResults()
+
+Element.Input.On("change") = SuggestAutocomplete()
+
+Element.Input.On("submit") = SubmitSearch()
+
+Element.Flipper.Prev.On("click") = ChangePage(UrlParam[p] - 1)
+Element.Flipper.Next.On("click") = ChangePage(UrlParam[p] + 1)
+Element.Flipper.Input.On("submit") = ChangePage(This.Content)
+
+function SuggestAutocomplete() {
+    set Tag = Element.Input.Content.LastWord
+    set Results = Client.GetAutocomplete(Tag)
+    set Element.Autocomplete.Content = Results.Map(Item to (ListItem <
+        Name = Item.Value.Replace("_" with " ")
+        Count = Item.Count
+        Value = Item.Value
+        OnClick = {
+            Element.Input.Content = Element.Input.Content.Replace(
+                LastWord with This.Value
+            )
+        }
+    >))
+}
+
+function SubmitSearch() {
+    set UrlParam[q] = Element.Input.Content
+    ChangePage(0)
+    LoadResults()
+}
+
+function ChangePage(Page) {
+    set UrlParam[p] = Page
+    if Page is 0, set Element.Flipper.Previous.Enabled = false
+    set Element.Flipper.Content = Page
+}
+
+function LoadResults() {
+    set Id = UrlParam[i]
+
+    if Id {
+        set Element.Post.Visible = true
+
+        set Post = Client.GetPost(Id)
+        set Element.Post.Content = Post
+    }
+
+    set Query = UrlParam[q]
+
+    if Query {
+        set Element.Input.Content = Query
+
+        set Page = UrlParam[p]
+        if Page is null {
+            set Page = 0
+            ChangePage(Page)
+        }
+
+        set Results = Client.Search(Query, Page)
+        set Element.Results.Content = Results
+    } else {
+        delete UrlParam[p]
+    }
+}

@@ -68,14 +68,15 @@ export class Submodule {
             () => this.displaySearchResults()
         );
 
+        this.element.input.addEventListener("input",
+            () => this.suggestAutocompletion()
+        );
+
         this.element.input.addEventListener("keydown",
             event => event.key === "Enter" && this.submitSearch()
         );
         this.element.submit.addEventListener("click",
             () => this.submitSearch()
-        );
-        this.element.input.addEventListener("input",
-            () => this.suggestAutocompletion()
         );
     }
 

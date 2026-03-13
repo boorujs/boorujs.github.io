@@ -3,20 +3,3 @@
 @import "../all/style/button.less";
 @import "../all/style/search-bar.less";
 @import "../all/style/search-results.less";
-
-ul#search-autocomplete {
-    display: flexbox;
-    & > li {
-        & > span.name {}
-        & > span.count {
-            &::before { content: "("; }
-            &::after  { content: ")"; }
-        }
-    }
-}
-
-ul#search-results {
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-}

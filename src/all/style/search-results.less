@@ -12,6 +12,8 @@ ul#search-results {
         justify-content: center;
         aspect-ratio: 1 / 1;
 
+        position: relative;
+
         background-image: linear-gradient(
             to bottom,
             var(--bg-up),
@@ -20,13 +22,16 @@ ul#search-results {
         border: solid (1 / @unit) var(--border-color);
         // border-radius: (8 / @unit);
 
-        img, video {
+        img {
             object-fit: contain;
             width: 100%;
             height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
 
-        &, &.static, &:hover {
+        &, &.static {
             --border-color: #FFF1;
             --bg-up: var(--accent-color-dark-5);
             --bg-dn: var(--accent-color-dark-4);
@@ -45,17 +50,17 @@ ul#search-results {
         }
 
         
-        > .thumb { display: block; }
-        > .preview { display: none; }
+        .thumb { display: block; }
+        .preview { display: none; }
         
         @media (hover: hover) {
             &:hover {
                 transform: scale(1.25);
-                filter: drop-shadow(0 (10 / @unit) (30 / @unit) #0008);
+                filter: drop-shadow(0 10px 30px #0008);
                 z-index: 1;
 
-                > .thumb { display: none; }
-                > .preview { display: block; }
+                .thumb { display: none; }
+                .preview { display: block; }
             }
 
             &:active {

@@ -53,6 +53,8 @@ export class Submodule {
         );
     }
 
+    hover() { return window.matchMedia("(hover: hover)").matches; }
+
     /**
      * @param {string} id 
      * @param {string | undefined} query 
@@ -65,12 +67,20 @@ export class Submodule {
     }
 
     async suggestAutocompletion() {
-        this.element.autocomplete.replaceChildren();
         const query = this.element.input.value;
-
-        
+        if (!query) {
+            this.element.autocomplete.replaceChildren();
+            return;
+        }
 
         const results = await this.autocomplete(query);
+        
+        if (!results.length) {
+            this.element.autocomplete.replaceChildren(
+                <li className="no-results">No results!</li>
+            )
+            return;
+        }
 
         this.element.autocomplete
         .replaceChildren(...results.map((tag, index) => (
@@ -87,7 +97,7 @@ export class Submodule {
 
         this.urlParam.set({ q: query });
         const results = await this.search(query);
-        
+
         this.element.results
         .replaceChildren(...results.map((post, index) => (
             <li key={index}
@@ -99,15 +109,10 @@ export class Submodule {
             >
                 <a href={post.href}>
                     <img className="thumb" src={post.thumbnail} />
-                    { post.type === "video"
-                        ? <video className="preview" src={post.preview}></video>
-                        : <img className="preview" src={post.preview} />
-                    }
+                    <img className="preview" src={post.preview} />
                 </a>
             </li>
         )));
-        
-        function setSrc(src) { return function () { this.src = src; }; }
     }
 
     urlParam = {

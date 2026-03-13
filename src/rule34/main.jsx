@@ -33,7 +33,7 @@ try {
 new class Rule34Module extends Submodule {
     /** @override */
     async autocomplete(query) {
-        return await client.autocomplete(query.match(/[^ ]*$/)?.[0] || "*")
+        return await client.autocomplete(query.match(/[^ ]*$/)?.[0])
         .then(tags => tags.tags.map(tag => ({
             name: tag.name.replace(/_/g, " "),
             count: tag.count,
@@ -47,13 +47,15 @@ new class Rule34Module extends Submodule {
             perPage: 42
         }).then(posts => Array.from(posts).map(post => ({
             thumbnail: post.file.thumbnail.url,
-            preview: post.file.downsample.url,
+            preview: post.file.type === Rule34.PostFileType.Video
+                ? post.file.downsample.url
+                : post.file.url,
             href: post.file.url,
             type: ({
                 [Rule34.PostFileType.Static]: "static",
                 [Rule34.PostFileType.Animated]: "animated",
                 [Rule34.PostFileType.Video]: "video",
-            }),
+            })[post.file.type],
             id: post.id,
             tags: post.tags.ofCategory(Rule34.TagType.Artist).map(tag => ({
                 name: tag.name,

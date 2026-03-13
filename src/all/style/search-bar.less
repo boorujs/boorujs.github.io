@@ -48,10 +48,12 @@ search#search > fieldset#search-bar {
         > ul.autocomplete {
             width: 100%;
             padding: (2 / @unit) (6 / @unit);
+            margin: 0;
             display: none; // set to "block" when input:focus
 
             position: absolute;
-            top: calc(100% + (14 / @unit));
+            @_top: (14 / @unit);
+            top: calc(100% + @_top);
             left: 0;
 
             box-sizing: border-box;
@@ -123,7 +125,7 @@ search#search > fieldset#search-bar {
             }
 
             /*** No results ***/
-            &.no-results {
+            &:has(li.no-results) {
                 color: #4a072c;
                 background-image: linear-gradient(
                     to bottom,
@@ -136,6 +138,7 @@ search#search > fieldset#search-bar {
                 }
                 > li {
                     display: block;
+                    font-style: italic;
                 }
             }
         }
@@ -158,7 +161,7 @@ search#search > fieldset#search-bar {
                 display: block; // only visible when focused
                 
                 /** Inactive **/
-                &:not(:has(> li > span:is(.name, .count))) {
+                &:not(:has(> li)) {
                     display: none;
                 }
             }

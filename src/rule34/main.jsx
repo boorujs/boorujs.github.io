@@ -31,7 +31,6 @@ try {
 }
 
 new class Rule34Module extends Submodule {
-    /** @override */
     async autocomplete(query) {
         return await client.autocomplete(query.match(/[^ ]*$/)?.[0])
         .then(tags => tags.tags.map(tag => ({
@@ -41,7 +40,6 @@ new class Rule34Module extends Submodule {
         })));
     }
 
-    /** @override */
     async search(query) {
         return await client.search(query, {
             perPage: 42

@@ -104,7 +104,7 @@ export class Submodule {
         const query = this.element.input.value;
 
         this.urlParam.set({ q: query });
-        window.dispatchEvent(new Event("popstate"));
+        this.displaySearchResults();
     }
 
     async displaySearchResults() {

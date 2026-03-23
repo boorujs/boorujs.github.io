@@ -1,76 +1,92 @@
-set Element = {
-    Input
-    Autocomplete
-    Flipper = {
-        Prev
-        Next
-        Input
-    }
-}
+When, do:
+    - Search bar content is changed
+    SuggestAutocomplete(Last word of content before cursor)
 
-Window.On("load") = LoadResults()
-UrlParam.On("change") = LoadResults()
-// TODO: use info with popstate for minimum api usage
+    - With search bar in focus, "enter" key is pressed
+    - Submit button is clicked
+    SubmitSearch()
+    one time: remove "first-load" class from body
 
-Element.Input.On("change") = SuggestAutocomplete()
+    - URL is changed via popstate
+    DisplayResults(popstate data)
 
-Element.Input.On("submit") = SubmitSearch()
+    - Page flipper buttons are clicked
+    FlipPage(prev / next)
 
-Element.Flipper.Prev.On("click") = ChangePage(UrlParam[p] - 1)
-Element.Flipper.Next.On("click") = ChangePage(UrlParam[p] + 1)
-Element.Flipper.Input.On("submit") = ChangePage(This.Content)
+    - With page flipper text input in focus, "enter" key is pressed
+    FlipToPage(input)
 
-function SuggestAutocomplete() {
-    set Tag = Element.Input.Content.LastWord
+function SuggestAutocomplete(Tag) {
     set Results = Client.GetAutocomplete(Tag)
-    set Element.Autocomplete.Content = Results.Map(Item to (ListItem <
-        Name = Item.Value.Replace("_" with " ")
+    
+    Autocompletion display = Results.Map(ListItem {
+        Name = Item.Value, with "_" replaced with " "
         Count = Item.Count
         Value = Item.Value
-        OnClick = {
-            Element.Input.Content = Element.Input.Content.Replace(
-                LastWord with This.Value
-            )
-        }
-    >))
+        OnClick = Replace last word in search bar with Item.Value
+    })
 }
 
 function SubmitSearch() {
-    set UrlParam[q] = Element.Input.Content
-    ChangePage(0)
+    set UrlParam[q] to search bar's content
+    ChangePageValues(0)
     LoadResults()
 }
 
-function ChangePage(Page) {
-    set UrlParam[p] = Page
-    if Page is 0, set Element.Flipper.Previous.Enabled = false
-    set Element.Flipper.Content = Page
+function FlipPage(State) {
+    Page is "p" URL parameter
+    if State is "next" {
+        FlipToPage(Page + 1)
+    } else {
+        FlipToPage(Page - 1)
+    }
+}
+
+function FlipToPage(Page) {
+    ChangePageValues(Page)
+    LoadResults()
+}
+
+function ChangePageValues(Page) {
+    set URL parameter "p" to Page
+    if Page is 0, disable prev flipper button
+    set flipper text input value to 0
 }
 
 function LoadResults() {
-    set Id = UrlParam[i]
+    ID is "i" URL parameter
 
-    if Id {
-        set Element.Post.Visible = true
+    if ID exists {
+        set visibility of post display to "visible"
 
-        set Post = Client.GetPost(Id)
-        set Element.Post.Content = Post
+        Post = Client.GetPost(Id)
+        display Post
     }
 
-    set Query = UrlParam[q]
+    Query is "q" URL parameter
 
-    if Query {
-        set Element.Input.Content = Query
+    if Query exists {
+        set search bar content to Query
 
-        set Page = UrlParam[p]
-        if Page is null {
-            set Page = 0
-            ChangePage(Page)
+        Page is "p" URL parameter
+        if Page doesn't exist {
+            set Page to 0
+            ChangePageValues(Page)
         }
 
-        set Results = Client.Search(Query, Page)
-        set Element.Results.Content = Results
+        Results = Client.Search(Query, Page)
+        DisplayResults(Results)
     } else {
-        delete UrlParam[p]
+        remove "p" URL parameter
     }
+
+    pop window state with search results as data
+}
+
+function DisplayResults(Results) {
+    display search results
+}
+
+function DisplayPost(Post) {
+    display post
 }

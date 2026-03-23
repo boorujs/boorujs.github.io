@@ -1,5 +1,8 @@
-import { DOMManager } from "../util/js/dom-manager.js";
-import { URLParameterManager } from "../util/js/url-parameter-manager.js";
+import { DOMManager } from "../util/js/dom-manager.ts";
+import { URLParameterManager } from "../util/js/url-parameter-manager.ts";
+
+const { get: getEl, create: createEl } = new DOMManager();
+const url = new URLParameterManager();
 
 interface AutocompleteResult {
     name: string;
@@ -16,28 +19,20 @@ interface SearchResult {
     tags: { name: string; count: number; }[];
 }
 
-/** @abstract */
 export abstract class Submodule {
-    /**
-     * Method run when autocompletion is searched for.
-     */
+    /** Method run when autocompletion is searched for. */
     abstract autocomplete(query: string): Promise<AutocompleteResult[]>;
     
-    /**
-     * Method run when post results are searched for.
-     */
+    /** Method run when post results are searched for. */
     abstract search(query: string): Promise<SearchResult[]>;
 
-    url = new URLParameterManager();
-    dom = new DOMManager();
-
     element = {
-        input:        this.dom.get<"input">("search-bar", ".input")!,
-        clear:        this.dom.get<"button">("search-bar", ".clear")!,
-        autocomplete: this.dom.get<"ul">("search-bar", ".autocomplete")!,
-        submit:       this.dom.get<"button">("search-bar", ".submit")!,
-        results:      this.dom.get<"ul">("search-results")!
-    } satisfies Record<any, Element>;
+        input:        getEl<"input">("search-bar", ".input")!,
+        clear:        getEl<"button">("search-bar", ".clear")!,
+        autocomplete: getEl<"ul">("search-bar", ".autocomplete")!,
+        submit:       getEl<"button">("search-bar", ".submit")!,
+        results:      getEl<"ul">("search-results")!
+    };
 
     constructor () {
         this.bindEvents();
@@ -81,47 +76,70 @@ export abstract class Submodule {
         
         if (!results.length) {
             this.element.autocomplete.replaceChildren(
-                <li className="no-results">No results!</li>
-            )
+                createEl("li", {
+                    properties: { className: "no-results" },
+                    children: [ "No results!" ]
+                })
+            );
             return;
         }
 
         this.element.autocomplete
-        .replaceChildren(...results.map((tag, index) => (
-            <li key={index}>
-                <span className="name">{ tag.name }</span>
-                <span className="count">{ tag.count }</span>
-            </li>
-        )));
+        .replaceChildren(...results.map(tag =>
+            createEl("li", { children: [
+                createEl("span", {
+                    properties: { className: "name" },
+                    children: [ tag.name ]
+                }),
+                createEl("span", {
+                    properties: { className: "count" },
+                    children: [ tag.count ]
+                })
+            ]})
+        ));
     }
 
     async submitSearch() {
         this.element.results.replaceChildren();
         const query = this.element.input.value;
 
-        this.url.set({ q: query });
+        url.set({ q: query });
         this.displaySearchResults();
     }
 
     async displaySearchResults() {
-        const query = this.url.getParams().get("q") ?? "";
+        const query = url.getParams().get("q") ?? "";
         this.element.input.value = query;
         const results = await this.search(query);
 
         this.element.results
-        .replaceChildren(...results.map((post, index) => (
-            <li key={index}
-                className={post.type}
-                title={`${post.id}: ${post.tags
-                    .map(t => `${t.name} (${t.count})`)
-                    .join(", ")
-                }`}
-            >
-                <a href={post.href}>
-                    <img className="thumb" src={post.thumbnail} />
-                    <img className="preview" src={post.preview} />
-                </a>
-            </li>
+        .replaceChildren(...results.map(post =>
+            createEl("li", {
+                properties: {
+                    className: post.type,
+                    title: `${post.id}: ${post.tags
+                        .map(t => `${t.name} (${t.count})`)
+                        .join(", ")
+                    }`
+                },
+                children: [ createEl("a", {
+                    properties: { href: post.href },
+                    children: [
+                        createEl("img", {
+                            properties: {
+                                className: "thumb",
+                                src: post.thumbnail
+                            }
+                        }),
+                        createEl("img", {
+                            properties: {
+                                className: "preview",
+                                src: post.preview
+                            }
+                        })
+                    ]
+                })]
+            }
         )));
     }
 }

@@ -1,55 +1,45 @@
-import { DOMManager } from "../util/js/dom-manager.jsx";
-import { URLParameterManager } from "../util/js/url-parameter-manager.jsx";
+import { DOMManager } from "../util/js/dom-manager.js";
+import { URLParameterManager } from "../util/js/url-parameter-manager.js";
 
-/**
- * @typedef {Object} AutocompleteResult
- * @prop {string} name
- * @prop {number} count
- * @prop {string} value
- */
+interface AutocompleteResult {
+    name: string;
+    count: number;
+    value: string;
+}
 
-/**
- * @typedef {Object} SearchResult
- * @prop {string} thumbnail
- * @prop {string} preview
- * @prop {string} href
- * @prop {"static" | "animated" | "video"} type
- * @prop {string | number} id
- * @prop {{ name: string; count: number; }[]} tags
- */
+interface SearchResult {
+    thumbnail: string;
+    preview: string;
+    href: string;
+    type: "static" | "animated" | "video";
+    id: string | number;
+    tags: { name: string; count: number; }[];
+}
 
 /** @abstract */
-export class Submodule {
+export abstract class Submodule {
     /**
-     * @abstract Method run when autocompletion is searched for.
-     * @param {string} query Value of input element.
-     * @returns {Promise<AutocompleteResult[]>}
+     * Method run when autocompletion is searched for.
      */
-    autocomplete(query) {
-        throw new Error("Method must be implemented by subclass.");
-    }
+    abstract autocomplete(query: string): Promise<AutocompleteResult[]>;
     
     /**
-     * @abstract Method run when post results are searched for.
-     * @param {string} query Value of input element.
-     * @returns {Promise<SearchResult[]>}
+     * Method run when post results are searched for.
      */
-    search(query) {
-        throw new Error("Method must be implemented by subclass.");
-    }
+    abstract search(query: string): Promise<SearchResult[]>;
+
+    url = new URLParameterManager();
+    dom = new DOMManager();
+
+    element = {
+        input:        this.dom.get<"input">("search-bar", ".input")!,
+        clear:        this.dom.get<"button">("search-bar", ".clear")!,
+        autocomplete: this.dom.get<"ul">("search-bar", ".autocomplete")!,
+        submit:       this.dom.get<"button">("search-bar", ".submit")!,
+        results:      this.dom.get<"ul">("search-results")!
+    } satisfies Record<any, Element>;
 
     constructor () {
-        this.url = new URLParameterManager();
-        const dom = new DOMManager();
-
-        this.element = {
-            input:        dom.getElement("search-bar", "input.input"),
-            clear:        dom.getElement("search-bar", "button.clear"),
-            autocomplete: dom.getElement("search-bar", "ul.autocomplete"),
-            submit:       dom.getElement("search-bar", "button.submit"),
-            results:      dom.getElement("search-results")
-        };
-        
         this.bindEvents();
     }
 
@@ -114,7 +104,7 @@ export class Submodule {
     }
 
     async displaySearchResults() {
-        const query = this.url.getParams().get("q");
+        const query = this.url.getParams().get("q") ?? "";
         this.element.input.value = query;
         const results = await this.search(query);
 

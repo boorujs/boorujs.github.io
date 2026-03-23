@@ -1,4 +1,4 @@
-import * as Rule34 from "https://esm.sh/gh/booru-abuse/booru-abuse@v0.1.0-alpha/src/module/rule34/index.ts.mjs?target=es2022";
+import * as Rule34 from "https://esm.sh/gh/boorujs/booru.js@v0.1.0-alpha/src/module/rule34/index.ts.mjs?target=es2022";
 import { Submodule } from "../all/template-class.ts";
 
 /* this page is in testing and i just want to be sure esm.sh works before i get

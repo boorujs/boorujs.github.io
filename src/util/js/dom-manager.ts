@@ -46,5 +46,7 @@ export class DOMManager {
         );
 
         element.replaceChildren(...options.children);
+
+        return element;
     }
 }

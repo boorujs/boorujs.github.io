@@ -21,9 +21,9 @@ try {
 } catch (error) {
     window.alert([
         [
-            "Uh-oh! The API key doesn't work properly. Please let me know via an",
-            "issue and I'll be sure to fix it as soon as I can. Below are the",
-            "specific error details."
+            "Uh-oh! The API key doesn't work properly. Please let me know via",
+            "an issue and I'll be sure to fix it as soon as I can. Below are",
+            "the specific error details."
         ].join(" "),
         error.toString()
     ].join("\n"));

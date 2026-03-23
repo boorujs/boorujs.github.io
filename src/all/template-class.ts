@@ -1,5 +1,5 @@
-import { DOMManager } from "../util/js/dom-manager.ts";
-import { URLParameterManager } from "../util/js/url-parameter-manager.ts";
+import { DOMManager } from "../util/ts/dom-manager.ts";
+import { URLParameterManager } from "../util/ts/url-parameter-manager.ts";
 
 const { get: getEl, create: createEl } = new DOMManager();
 const url = new URLParameterManager();

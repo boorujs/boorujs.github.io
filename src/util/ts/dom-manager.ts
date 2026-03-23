@@ -11,7 +11,8 @@ export class DOMManager {
         tagName: T,
         options: {
             properties?: {
-                [K in keyof HTMLElementTagNameMap[T]]?: HTMLElementTagNameMap[T][K];
+                [K in keyof HTMLElementTagNameMap[T]]?:
+                    HTMLElementTagNameMap[T][K];
             };
             attributes?: Record<string, string>;
             on?: {

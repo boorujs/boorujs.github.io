@@ -1,6 +1,10 @@
 type UrlKeys = Record<string, any>;
 
 export class URLParameterManager {
+    get(key: string) {
+        return this.getParams().get(key);
+    }
+
     set(object: UrlKeys) {
         const params = new URLSearchParams();
         Object.entries(object).forEach(

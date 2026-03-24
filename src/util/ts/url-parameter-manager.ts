@@ -5,26 +5,26 @@ export class URLParameterManager {
         return this.getParams().get(key);
     }
 
-    set(object: UrlKeys) {
+    set(object: UrlKeys, data?: any = {}) {
         const params = new URLSearchParams();
         Object.entries(object).forEach(
             ([ key, value ]) => params.set(key, value)
         );
-        this.setParams(params);
+        this.setParams(params, data);
     }
 
-    replace(object: UrlKeys) {
+    replace(object: UrlKeys, data?: any = {}) {
         const params = this.getParams();
         Object.entries(object).forEach(
             ([ key, value ]) => params.set(key, value)
         );
-        this.setParams(params);
+        this.setParams(params, data);
     }
 
-    remove(...keys: string[]) {
+    remove(keys: string[], data?: any = {}) {
         const params = this.getParams();
         keys.forEach(i => params.delete(i));
-        this.setParams(params);
+        this.setParams(params, data);
     }
 
     getParams() {

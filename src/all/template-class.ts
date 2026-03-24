@@ -1,4 +1,4 @@
-import { getEl, createEl } from "../util/ts/dom-manager.ts";
+import { getEl, createEl } from "../util/ts/dom.ts";
 import { URLParameterManager } from "../util/ts/url-parameter-manager.ts";
 
 const url = new URLParameterManager();

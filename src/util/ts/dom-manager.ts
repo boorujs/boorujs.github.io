@@ -27,7 +27,7 @@ export class DOMManager {
                     event: HTMLElementEventMap[E]
                 ) => any;
             };
-            children: (string | Node)[];
+            children?: (string | Node)[];
         }
     ): HTMLElementTagNameMap[T] {
         const element = document.createElement(tagName);

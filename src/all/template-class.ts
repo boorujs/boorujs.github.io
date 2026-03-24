@@ -89,21 +89,23 @@ export abstract class Submodule {
             this.submitSearch(query, page);
         }
 
-        this.el.flipper.prev.addEventListener("click", () => {
+        this.el.flipper.prev.addEventListener("click",
+            () => flip(-1)
+        );
+        this.el.flipper.next.addEventListener("click",
+            () => flip(+1)
+        );
+
+        const flip = dir => {
             const query = url.get("q");
             const page = parseInt(url.get("p"));
-            this.submitSearch(query, ++page);
-        });
-        this.el.flipper.next.addEventListener("click", () => {
-            const query = url.get("q");
-            const page = parseInt(url.get("p"));
-            this.submitSearch(query, --page);
-        });
+            this.submitSearch(query, page + dir);
+        };
 
         this.el.flipper.input.addEventListener("keydown", e => {
             if (e.key === "Enter") {
                 const query = url.get("q");
-                const page = this.el.flipper.input.value;
+                const page = e.target.value;
                 this.submitSearch(query, page);
             }
         });

@@ -1,30 +1,25 @@
-import { DOMManager } from "../util/ts/dom-manager.ts";
+import { getEl, createEl } from "../util/ts/dom-manager.ts";
 import { URLParameterManager } from "../util/ts/url-parameter-manager.ts";
 
-const { get: getEl, create: createEl } = new DOMManager();
 const url = new URLParameterManager();
-
-interface AutocompleteResult {
-    name: string;
-    count: number;
-    value: string;
-}
-
-interface SearchResult {
-    thumbnail: string;
-    preview: string;
-    href: string;
-    type: "static" | "animated" | "video";
-    id: string | number;
-    tags: { name: string; count: number; }[];
-}
 
 export abstract class Submodule {
     /** Method run when autocompletion is searched for. */
-    abstract autocomplete(query: string): Promise<AutocompleteResult[]>;
+    abstract autocomplete(query: string): Promise<{
+        name: string;
+        count: number;
+        value: string;
+    }[]>;
     
     /** Method run when post results are searched for. */
-    abstract search(query: string): Promise<SearchResult[]>;
+    abstract search(query: string): Promise<{
+        thumbnail: string;
+        preview: string;
+        href: string;
+        type: "static" | "animated" | "video";
+        id: string | number;
+        tags: { name: string; count: number; }[];
+    }[]>;
 
     element = {
         input:        getEl<"input">("search-bar", ".input")!,

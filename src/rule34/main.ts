@@ -40,8 +40,9 @@ new class Rule34Module extends Submodule {
         })));
     }
 
-    async search(query: string) {
+    async search(query: string, page: number) {
         return await client.search(query, {
+            page: page,
             perPage: 42
         }).then((posts: any) => Array.from(posts).map((post: any) => ({
             thumbnail: post.file.thumbnail.url,
@@ -55,10 +56,9 @@ new class Rule34Module extends Submodule {
                 [Rule34.PostFileType.Video]: "video",
             })[post.file.type],
             id: post.id,
-            tags: post.tags.ofCategory(Rule34.TagType.Artist).map((tag: any) => ({
-                name: tag.name,
-                count: tag.count
-            }))
+            tags: post.tags.ofCategory(Rule34.TagType.Artist).map(
+                (tag: any) => ({ name: tag.name, count: tag.count })
+            )
         })));
     }
 }

@@ -1,13 +1,13 @@
 export class DOMManager {
-    get<T extends keyof HTMLElementTagNameMap = keyof HTMLElementTagNameMap>(
+    get<T extends Element | keyof HTMLElementTagNameMap = Element>(
         id: string, query?: string
-    ): HTMLElementTagNameMap[T] {
+    ): T extends Element ? T : HTMLElementTagNameMap[T] {
         const el = document.getElementById(id);
         if (query) return el?.querySelector(query) as HTMLElementTagNameMap[T];
         else return el as HTMLElementTagNameMap[T];
     }
 
-    create<T extends keyof HTMLElementTagNameMap>(
+    create<T extends Element | keyof HTMLElementTagNameMap>(
         tagName: T,
         options: {
             properties?: {
@@ -29,7 +29,7 @@ export class DOMManager {
             };
             children?: (string | Node)[];
         }
-    ): HTMLElementTagNameMap[T] {
+    ): T extends Element ? T : HTMLElementTagNameMap[T] {
         const element = document.createElement(tagName);
 
         if (options.attributes)

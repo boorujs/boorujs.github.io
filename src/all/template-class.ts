@@ -12,7 +12,7 @@ export abstract class Submodule {
     }[]>;
     
     /** Method run when post results are searched for. */
-    abstract search(query: string): Promise<{
+    abstract search(query: string, page: number): Promise<{
         thumbnail: string;
         preview: string;
         href: string;
@@ -26,7 +26,12 @@ export abstract class Submodule {
             input: getEl<"input">("#search-bar .input"),
             clear: getEl<"button">("#search-bar .clear"),
             submit: getEl<"button">("#search-bar .submit"),
-            autocomplete: getEl<"ul">("#search-bar .autocomplete")
+            autocomplete: getEl<"ul">("#search-bar .autocomplete"),
+        },
+        flipper: {
+            prev: getEl<"button">("#page-flipper .prev"),
+            next: getEl<"button">("#page-flipper .next"),
+            input: getEl<"button">("#page-flipper .input")
         },
         results: getEl<"ul">("#search-results"),
         post: getEl<"article">("#post")
@@ -36,13 +41,17 @@ export abstract class Submodule {
         this.bindEvents();
     }
 
+    //#region events
+
     bindEvents() {
         // window.addEventListener("load", ...) doesnt work for some reason
         const onload = () => {
             const query = url.get("q");
-            if (query !== null) {
-                this.el.search.input.value = query;
-                this.submitSearch(query);
+            const page = url.get("p");
+            if (query !== null || page !== null) {
+                this.setSearchValues(query);
+                this.setPageValues(page);
+                this.submitSearch(query ?? "", page ?? 0);
             }
         };
         onload();
@@ -58,6 +67,8 @@ export abstract class Submodule {
         window.addEventListener("popstate", e => {
             const query = url.get("q");
             if (query) this.el.search.input.value = query;
+            const page = parseInt(url.get("p"));
+            this.el.flipper.input.value = page ?? 0;
             this.displaySearchResults(e.state);
         });
 
@@ -66,11 +77,36 @@ export abstract class Submodule {
         );
 
         this.el.search.input.addEventListener("keydown",
-            e => e.key === "Enter" && this.searchBarSubmit()
+            e => e.key === "Enter" && submit()
         );
         this.el.search.submit.addEventListener("click",
-            () => this.searchBarSubmit()
+            () => submit()
         );
+
+        const submit = () => {
+            const query = this.el.search.input.value;
+            const page = this.el.flipper.input.value;
+            this.submitSearch(query, page);
+        }
+
+        this.el.flipper.prev.addEventListener("click", () => {
+            const query = url.get("q");
+            const page = parseInt(url.get("p"));
+            this.submitSearch(query, ++page);
+        });
+        this.el.flipper.next.addEventListener("click", () => {
+            const query = url.get("q");
+            const page = parseInt(url.get("p"));
+            this.submitSearch(query, --page);
+        });
+
+        this.el.flipper.input.addEventListener("keydown", e => {
+            if (e.key === "Enter") {
+                const query = url.get("q");
+                const page = this.el.flipper.input.value;
+                this.submitSearch(query, page);
+            }
+        });
     }
 
     //#region autocomplete
@@ -85,6 +121,50 @@ export abstract class Submodule {
             );
         } else return null;
     }
+
+    async suggestAutocompletion() {
+        const tag = this.getAutocompleteWord();
+        if (!tag) {
+            this.displayAutocomplete(null);
+            return;
+        } else {
+            const results = await this.autocomplete(tag);
+            this.displayAutocomplete(results);
+        }
+    }
+
+    //#region search
+
+    async submitSearch(query, page) {
+        this.setSearchValues(query);
+        this.setPageValues(page);
+
+        this.displaySearchResults(null);
+        const results = await this.search(query, page);
+        url.set({ q: query, p: page }, results);
+        this.displaySearchResults(results);
+    }
+
+    searchBarSubmit() {
+        const query = this.el.search.input.value;
+        const page = this.el.flipper.input.value;
+        this.submitSearch(query, page);
+    }
+
+    setSearchValues(query) {
+        if (query !== null) this.el.search.input.value = query;
+    }
+
+    //#region page flipper
+
+    setPageValues(page) {
+        page ??= 0;
+        this.el.flipper.input.value = page;
+        if (page === 0)
+            this.el.flipper.prev.disabled = true;
+    }
+
+    //#region display
 
     displayAutocomplete(tags) {
         switch (true) {
@@ -114,19 +194,6 @@ export abstract class Submodule {
                 ));
         }
     }
-
-    async suggestAutocompletion() {
-        const tag = this.getAutocompleteWord();
-        if (!tag) {
-            this.displayAutocomplete(null);
-            return;
-        } else {
-            const results = await this.autocomplete(tag);
-            this.displayAutocomplete(results);
-        }
-    }
-
-    //#region search
 
     displaySearchResults(posts) {
         const list = this.el.results;
@@ -168,17 +235,5 @@ export abstract class Submodule {
                     })
                 ));
         }
-    }
-
-    async submitSearch(query) {
-        this.displaySearchResults(null);
-        const results = await this.search(query);
-        url.set({ q: query }, results);
-        this.displaySearchResults(results);
-    }
-
-    searchBarSubmit() {
-        const query = this.el.search.input.value;
-        this.submitSearch(query);
     }
 }

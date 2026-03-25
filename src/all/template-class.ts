@@ -28,12 +28,15 @@ export abstract class Submodule {
     };
 
     constructor () {
-        this.bindEvents();
+        this.bindWindowEvents();
+        this.bindSearchBarEvents();
+        this.bindFlipperEvents();
+        this.bindAdditionalEvents?.();
     }
 
     //#region events
 
-    bindEvents() {
+    bindWindowEvents() {
         // window.addEventListener("load", ...) doesnt work for some reason
         const onLoad = () => {
             const query = url.get("q") ?? "";
@@ -59,7 +62,9 @@ export abstract class Submodule {
             this.el.flipper.input.value = page ?? "0";
             this.displaySearchResults(e.state);
         });
+    }
 
+    bindSearchBarEvents() {
         this.el.search.input.addEventListener("input",
             () => this.suggestAutocompletion()
         );
@@ -76,7 +81,9 @@ export abstract class Submodule {
             this.submitSearch(query, "0");
             this.el.search.input.blur();
         }
+    }
 
+    bindFlipperEvents() {
         this.el.flipper.prev.addEventListener("click",
             () => flip(-1)
         );
@@ -98,6 +105,8 @@ export abstract class Submodule {
             }
         });
     }
+
+    bindAdditionalEvents?(): void;
 
     //#region autocomplete
 

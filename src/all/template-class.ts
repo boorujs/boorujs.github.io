@@ -1,25 +1,15 @@
 import { getEl, createEl } from "../util/ts/dom.ts";
 import { URLParameterManager } from "../util/ts/url-parameter-manager.ts";
+import type { AutocompleteResult, SearchResult } from "./return-types.ts";
 
 const url = new URLParameterManager();
 
 export abstract class Submodule {
     /** Method run when autocompletion is searched for. */
-    abstract autocomplete(query: string): Promise<{
-        name: string;
-        count: number;
-        value: string;
-    }[]>;
+    abstract autocomplete(query: string): Promise<AutocompleteResult[]>;
     
     /** Method run when post results are searched for. */
-    abstract search(query: string, page: number): Promise<{
-        thumbnail: string;
-        preview: string;
-        href: string;
-        type: "static" | "animated" | "video";
-        id: string | number;
-        tags: { name: string; count: number; }[];
-    }[]>;
+    abstract search(query: string, page: number): Promise<SearchResult[]>;
 
     el = {
         search: {
@@ -200,14 +190,7 @@ export abstract class Submodule {
             ));
     }
 
-    displaySearchResults(posts: {
-        thumbnail: string;
-        preview: string;
-        href: string;
-        type: "static" | "animated" | "video";
-        id: string | number;
-        tags: { name: string; count: number; }[];
-    }[] | null) {
+    displaySearchResults(posts: SearchResult[] | null) {
         const list = this.el.results;
         if (!posts)
             list.replaceChildren();

@@ -137,12 +137,6 @@ export abstract class Submodule {
         this.displaySearchResults(results);
     }
 
-    searchBarSubmit() {
-        const query = this.el.search.input.value;
-        const page = this.el.flipper.input.value;
-        this.submitSearch(query, page);
-    }
-
     setSearchValues(query: string) {
         if (query !== null) this.el.search.input.value = query;
     }

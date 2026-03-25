@@ -105,10 +105,11 @@ export abstract class Submodule {
         const text = this.el.search.input.value;
         const index = this.el.search.input.selectionStart;
         if (index !== null) {
-            return (
+            const word = (
                 text.substring(0, index).match( /[^ ]*$/)![0] +
                 text.substring(index)   .match(/^[^ ]*/ )![0]
             );
+            return word;
         } else return null;
     }
 

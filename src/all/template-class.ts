@@ -94,7 +94,7 @@ export abstract class Submodule {
         const flip = (dir: 1 | -1) => {
             const query = url.get("q") ?? "";
             const page = url.get("p") ?? "0";
-            this.submitSearch(query, String(parseInt(page) + dir));
+            this.submitSearch(query, (parseInt(page) + dir).toString());
         };
 
         this.el.flipper.input.addEventListener("keydown", e => {
@@ -110,6 +110,8 @@ export abstract class Submodule {
 
     //#region autocomplete
 
+    lastTagRegex = /[^ ]*$/;
+
     getAutocompleteWord() {
         const text = this.el.search.input.value;
         const index = this.el.search.input.selectionStart;
@@ -123,13 +125,20 @@ export abstract class Submodule {
     }
 
     async suggestAutocompletion() {
-        const tag = this.getAutocompleteWord();
-        if (!tag) {
+        // const word = this.getAutocompleteWord();
+        const word = this.el.search.input.value.match(this.lastTagRegex)![0];
+        if (!word) {
             this.displayAutocomplete(null);
         } else {
-            const results = await this.autocomplete(tag);
+            const results = await this.autocomplete(word);
             this.displayAutocomplete(results);
         }
+    }
+
+    autocompleteWord(word: string) {
+        const input = this.el.search.input;
+        input.value = input.value.replace(this.lastTagRegex, word);
+        this.displayAutocomplete(null);
     }
 
     //#region search
@@ -176,17 +185,22 @@ export abstract class Submodule {
                 })
             );
         else
-            list.replaceChildren(...tags.map((tag: any) =>
-                createEl("li", { children: [
-                    createEl("span", {
-                        properties: { className: "name" },
-                        children: [ tag.name ]
-                    }),
-                    createEl("span", {
-                        properties: { className: "count" },
-                        children: [ tag.count ]
-                    })
-                ]})
+            list.replaceChildren(...tags.map((tag) =>
+                createEl("li", {
+                    once: {
+                        "click": () => this.autocompleteWord(tag.value),
+                    },
+                    children: [
+                        createEl("span", {
+                            properties: { className: "name" },
+                            children: [ tag.name ]
+                        }),
+                        createEl("span", {
+                            properties: { className: "count" },
+                            children: [ tag.count.toString() ]
+                        })
+                    ]
+                })
             ));
     }
 

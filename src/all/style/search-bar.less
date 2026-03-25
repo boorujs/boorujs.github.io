@@ -98,6 +98,10 @@ search > fieldset#search-bar {
                 display: block;
             }
 
+            &:empty {
+                display: none;
+            }
+
             /*** Results exist ***/
             > li:has(> span:is(.name, .count)) {
                 display: grid;
